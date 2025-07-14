@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Minecraft 1.4.X in Browser</title>
+    <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
+  </head>
+  <body style="background:black;">
+    <script>
+      (async function () {
+        await cheerpjInit();
+        cheerpjCreateDisplay(854, 480); // Minecraft resolution
+        await cheerpjRunJar("/app/client.jar");
+      })();
+    </script>
+    <h2 style="color:white; font-family:monospace;">Loading Minecraft... please wait.</h2>
+  </body>
+</html>
