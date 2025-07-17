@@ -72,11 +72,12 @@
       display.innerHTML = "";
     }
 
-    function launchEagler(folder) {
+    function launchEagler(name) {
       clearDisplay();
       let iframe = document.createElement("iframe");
-      iframe.src = folder + "/index.html";
+      iframe.src = name + ".html"; // Looks for eag2.html, eag1.html, etc.
       display.appendChild(iframe);
+
     }
 
     async function launchJar(jarName) {
