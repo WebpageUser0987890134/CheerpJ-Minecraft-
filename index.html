@@ -2,88 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Minecraft Browser Launcher</title>
+  <title>Web Minecraft Hub</title>
   <script src="https://cjrtnc.leaningtech.com/4.2/loader.js"></script>
   <style>
-    body {
-      background-color: #000;
-      font-family: monospace;
-      color: white;
-      text-align: center;
+    html, body {
       margin: 0;
-      padding: 20px;
+      background: #111;
+      color: white;
+      font-family: monospace;
+      height: 100%;
+      overflow: hidden;
     }
-    h1 {
-      margin-bottom: 10px;
+    #menu {
+      background: #222;
+      padding: 10px;
+      text-align: center;
     }
     button {
-      margin: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #111;
+      margin: 4px;
+      padding: 8px 16px;
+      background: #333;
       color: white;
-      border: 1px solid #555;
+      border: 1px solid #666;
+      font-size: 14px;
       cursor: pointer;
     }
-    #cheerpj-container {
-      margin-top: 20px;
+    #display {
+      width: 100vw;
+      height: calc(100vh - 60px);
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    iframe, canvas {
+      max-width: 100%;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
 <body>
-  <h1>Minecraft in Your Browser</h1>
-  <p>Select a version to launch:</p>
-
-  <button onclick="launchJar('client-1.jar')">Minecraft Survival Test 0.30</button>
-  <button onclick="launchJar('client0.jar')">Minecraft Beta 1.8</button>
-  <button onclick="launchJar('client.jar')">Minecraft 1.0.0</button>
-  <button onclick="launchJar('client2.jar')">Minecraft 1.4.2</button>
-  <button onclick="launchJar('client3.jar')">Minecraft 1.14</button>
-  <button onclick="launchJar('client4.jar')">Minecraft 1.21.5</button>
-
-  <p>
-    <button onclick="changeResolution(1)">🔼 Increase Resolution</button>
-    <button onclick="changeResolution(-1)">🔽 Decrease Resolution</button>
+  <div id="menu">
+    <strong>Eaglercraft:</strong>
+    <button onclick="launchEagler('eag0')">Indev</button>
+    <button onclick="launchEagler('eag1')">Alpha</button>
+    <button onclick="launchEagler('eag2')">1.5.2</button>
+    <button onclick="launchEagler('eag3')">1.8.8/9</button>
+    <button onclick="launchEagler('eag4')">1.12</button>
+    &nbsp;&nbsp;&nbsp;
+    <strong>Java (.jar):</strong>
+    <button onclick="launchJar('client0.jar')">Beta 1.8</button>
+    <button onclick="launchJar('client1.jar')">1.0.0</button>
+    <button onclick="launchJar('client2.jar')">1.4.2</button>
+    <button onclick="launchJar('client3.jar')">1.14</button>
+    <button onclick="launchJar('client4.jar')">1.21.5</button>
+    &nbsp;&nbsp;&nbsp;
     <button onclick="fullscreen()">⛶ Fullscreen</button>
-  </p>
+  </div>
 
-  <div id="cheerpj-container"></div>
+  <div id="display"></div>
 
   <script>
-    let resolutions = [
-      [640, 360],
-      [854, 480],
-      [960, 540],
-      [1280, 720],
-      [1600, 900]
-    ];
-    let currentResIndex = 1; // Default 854x480
+    let display = document.getElementById("display");
 
-    async function launchJar(jarName) {
-      const container = document.getElementById("cheerpj-container");
-      container.innerHTML = ""; // Clear previous instance
-      await cheerpjInit();
-      const [w, h] = resolutions[currentResIndex];
-      const canvas = cheerpjCreateDisplay(w, h);
-      container.appendChild(canvas);
-      await cheerpjRunJar(jarURL(jarName));
+    function clearDisplay() {
+      display.innerHTML = "";
     }
 
-    function jarURL(name) {
-      return `https://webpageuser0987890134.github.io/Web-Minecraft-/${name}`;
+    function launchEagler(folder) {
+      clearDisplay();
+      let iframe = document.createElement("iframe");
+      iframe.src = folder + "/index.html";
+      display.appendChild(iframe);
+    }
+
+    async function launchJar(jarName) {
+      clearDisplay();
+      try {
+        await cheerpjInit();
+        let canvas = cheerpjCreateDisplay(window.innerWidth, window.innerHeight);
+        display.appendChild(canvas);
+        await cheerpjRunJar("/" + jarName);
+      } catch (err) {
+        alert("Failed to run .jar:\n" + err);
+      }
     }
 
     function fullscreen() {
-      const canvas = document.querySelector("#cheerpj-container canvas");
-      if (canvas?.requestFullscreen) canvas.requestFullscreen();
-      else if (canvas?.webkitRequestFullscreen) canvas.webkitRequestFullscreen();
-    }
-
-    function changeResolution(direction) {
-      currentResIndex += direction;
-      if (currentResIndex < 0) currentResIndex = 0;
-      if (currentResIndex >= resolutions.length) currentResIndex = resolutions.length - 1;
-      alert(`Resolution set to ${resolutions[currentResIndex][0]} x ${resolutions[currentResIndex][1]}.\nReload a Minecraft version to apply.`);
+      const elem = display.querySelector("iframe, canvas, div");
+      if (elem?.requestFullscreen) elem.requestFullscreen();
+      else if (display?.requestFullscreen) display.requestFullscreen();
     }
   </script>
 </body>
